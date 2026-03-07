@@ -11,7 +11,7 @@ const members = [
     name: 'ALEX', 
     role: 'LEAD_SYNTH', 
     details: 'The sonic architect behind the Depth Composition. Specializes in neuro-rhythmic synthesis and analog distortion.',
-    image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop', // Placeholder
+    image: '/Luigi_Poster.png', // Placeholder
     color: '#FF3B3B',
     socials: { twitter: '#', insta: '#', yt: '#' }
   },

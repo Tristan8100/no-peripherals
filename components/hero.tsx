@@ -37,7 +37,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/20 to-background/90" />
       </div>
 
-      <div className="relative z-10 h-full flex flex-col items-center justify-start pt-[15vh] md:pt-[20vh]">
+      <div className="relative z-10 h-full flex flex-col items-center justify-center">
         
         {/* Logo */}
         <motion.div
