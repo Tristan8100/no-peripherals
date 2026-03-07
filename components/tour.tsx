@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { RecordingDot } from './svg-decorations';
+import { HeaderTitle } from './header-title';
 
 const tourDates = [
   { date: '2024-03-15', location: 'TOKYO', status: 'CONFIRMED', venue: 'Roppongi Club' },
@@ -53,19 +54,7 @@ export function Tour() {
     <section className="relative w-full min-h-screen bg-black py-24 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4">
         {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
-          <h2 className="text-5xl md:text-6xl font-black text-white mb-4 glow-text">
-            TERMINAL FEED
-          </h2>
-          <p className="text-gray-400 font-mono text-sm">
-            // LIVE RECORDING STREAM //
-          </p>
-        </motion.div>
+        <HeaderTitle title="Tours and Concerts" description="Upcoming Shows" />
 
         {/* Tour list with terminal styling */}
         <motion.div

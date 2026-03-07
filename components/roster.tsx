@@ -1,201 +1,135 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { TargetBracket, Crosshair, FloatingDataString } from './svg-decorations';
+import { useState, useEffect } from 'react';
+import { Instagram, Twitter, Youtube, ExternalLink } from 'lucide-react'; // Install lucide-react if you haven't
+import { HeaderTitle } from './header-title';
 
 const members = [
-  {
-    id: 1,
-    name: 'ALEX',
-    role: 'LEAD_SYNTH',
-    signal: '98%',
-    position: 'center',
-    x: '50%',
-    y: '50%',
-    z: 50,
-    scale: 1.2,
+  { 
+    id: 1, 
+    name: 'ALEX', 
+    role: 'LEAD_SYNTH', 
+    details: 'The sonic architect behind the Depth Composition. Specializes in neuro-rhythmic synthesis and analog distortion.',
+    image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1000&auto=format&fit=crop', // Placeholder
+    color: '#FF3B3B',
+    socials: { twitter: '#', insta: '#', yt: '#' }
   },
-  {
-    id: 2,
-    name: 'MAYA',
-    role: 'BASS_ENGINE',
-    signal: '92%',
-    position: 'mid-left',
-    x: '20%',
-    y: '45%',
-    z: 40,
-    scale: 1,
+  { 
+    id: 2, 
+    name: 'MAYA', 
+    role: 'BASS_ENGINE', 
+    details: 'Sub-harmonic specialist. Her frequencies are designed to bypass the ears and vibrate the skeletal structure.',
+    image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1000&auto=format&fit=crop', // Placeholder
+    color: '#3B82F6',
+    socials: { twitter: '#', insta: '#', yt: '#' }
   },
-  {
-    id: 3,
-    name: 'RENZO',
-    role: 'DRUMS_AI',
-    signal: '95%',
-    position: 'mid-right',
-    x: '80%',
-    y: '50%',
-    z: 40,
-    scale: 1,
-  },
-  {
-    id: 4,
-    name: 'IRIS',
-    role: 'VISUAL_TECH',
-    signal: '88%',
-    position: 'back-left',
-    x: '10%',
-    y: '35%',
-    z: 30,
-    scale: 0.8,
-  },
-  {
-    id: 5,
-    name: 'NAVI',
-    role: 'SOUNDSCAPE',
-    signal: '91%',
-    position: 'back-right',
-    x: '90%',
-    y: '40%',
-    z: 30,
-    scale: 0.8,
-  },
-  {
-    id: 6,
-    name: 'KAI',
-    role: 'CREATIVE_DIR',
-    signal: '96%',
-    position: 'back-center',
-    x: '50%',
-    y: '25%',
-    z: 25,
-    scale: 0.75,
-  },
+  // Add more as needed...
 ];
 
 export function Roster() {
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
 
   return (
-    <section className="relative w-full min-h-screen bg-black py-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+    <main className=" bg-black text-white">
+        <HeaderTitle title="BAND_MEMBERS" description="Our members are the core of NO PERIPHERALS." className="pt-16" />
+      {members.map((member, index) => (
+        <section 
+          key={member.id} 
+          className="relative h-screen w-full snap-start snap-always flex items-center justify-center overflow-hidden border-b border-white/5"
         >
-          <h2 className="text-5xl md:text-6xl font-black text-white mb-4 glow-text">
-            THE DEPTH COMPOSITION
-          </h2>
-          <p className="text-gray-400 font-mono text-sm">
-            // LAYERED 3D V-SHAPE FORMATION //
-          </p>
-        </motion.div>
+          {/* Background Big Name - Sticker Style */}
+          <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none">
+            <h2 className="text-[25vw] font-black italic opacity-5 leading-none tracking-tighter">
+              {member.name}
+            </h2>
+          </div>
 
-        {/* Depth composition container */}
-        <div className="relative h-96 md:h-[600px] mx-auto max-w-4xl">
-          {/* Background crosshair */}
-          <Crosshair className="top-1/3 left-1/3 w-80 h-80" opacity={0.1} />
-
-          {/* Members positioned with depth */}
-          {members.map((member) => (
-            <motion.div
-              key={member.id}
-              onMouseEnter={() => setHoveredId(member.id)}
-              onMouseLeave={() => setHoveredId(null)}
-              className="absolute cursor-pointer"
-              style={{
-                left: member.x,
-                top: member.y,
-                transform: 'translate(-50%, -50%)',
-              }}
-              animate={{
-                zIndex: hoveredId === member.id ? 100 : member.z,
-                scale: hoveredId === member.id ? 1.15 : member.scale,
-                filter:
-                  hoveredId === member.id
-                    ? 'brightness(1) blur(0px) drop-shadow(0 0 30px #8B0000)'
-                    : member.z < 40
-                      ? 'brightness(0.5) blur(2px)'
-                      : 'brightness(0.75) blur(0px)',
-              }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
+          <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 items-center gap-12 relative z-10">
+            
+            {/* Left Side: Character Image (The "Sticker") */}
+            <motion.div 
+              initial={{ opacity: 0, x: -100 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="relative aspect-[4/5] w-full max-w-md mx-auto lg:ml-0"
             >
-              {/* Member avatar */}
-              <div className="relative w-24 md:w-32 h-24 md:h-32 flex items-center justify-center">
-                <motion.div
-                  className="w-full h-full rounded-lg border-2 border-red-900/50 overflow-hidden bg-gray-900/50 backdrop-blur flex items-center justify-center"
-                  animate={{
-                    borderColor: hoveredId === member.id ? '#8B0000' : 'rgba(139, 0, 0, 0.3)',
-                    boxShadow:
-                      hoveredId === member.id
-                        ? '0 0 40px rgba(139, 0, 0, 0.6), inset 0 0 20px rgba(139, 0, 0, 0.2)'
-                        : 'none',
-                  }}
-                >
-                  <div className="text-center">
-                    <div className="text-2xl md:text-3xl font-black text-red-900">
-                      {member.name.charAt(0)}
-                    </div>
-                    <div className="text-xs font-mono text-gray-400 mt-1">
-                      {member.name.slice(1, 3)}
-                    </div>
-                  </div>
-                </motion.div>
+              {/* Border Decor */}
+              <div className="absolute -inset-4 border border-white/10" />
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-red-600" />
+              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-red-600" />
+              
+              {/* The Image Sticker */}
+              <div className="relative w-full h-full overflow-hidden bg-zinc-900 group">
+                <img 
+                  src={member.image} 
+                  alt={member.name} 
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-110" 
+                />
+                {/* Overlay Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+              </div>
+            </motion.div>
 
-                {/* Target bracket on hover */}
-                {hoveredId === member.id && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="absolute inset-0 -m-4"
-                  >
-                    <TargetBracket />
-                  </motion.div>
-                )}
+            {/* Right Side: Data & Details */}
+            <motion.div 
+              initial={{ opacity: 0, x: 100 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="space-y-8"
+            >
+              <div>
+                <span className="inline-block px-3 py-1 bg-red-600 text-[10px] font-bold tracking-widest mb-4">
+                  UNIT_0{member.id} // ACTIVE
+                </span>
+                <h3 className="text-7xl md:text-9xl font-black italic tracking-tighter uppercase leading-none">
+                  {member.name}
+                </h3>
+                <p className="text-red-500 font-mono text-sm tracking-[0.3em] mt-2 italic uppercase">
+                  {member.role}
+                </p>
               </div>
 
-              {/* Data display on hover */}
-              {hoveredId === member.id && (
-                <motion.div
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  className="absolute -right-32 md:-right-40 top-0 font-mono text-xs text-red-900 bg-black/80 border border-red-900/50 p-3 rounded w-32 md:w-40"
-                >
-                  <div className="mb-2">{member.name}</div>
-                  <div className="text-gray-400 text-xs mb-2">ROLE: {member.role}</div>
-                  <div className="font-bold">SIGNAL: {member.signal}</div>
-                </motion.div>
-              )}
-            </motion.div>
-          ))}
-        </div>
+              <div className="max-w-md">
+                <p className="text-gray-400 font-mono text-sm leading-relaxed border-l-2 border-white/20 pl-4">
+                  {member.details}
+                </p>
+              </div>
 
-        {/* Bottom stats */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-20 grid grid-cols-2 md:grid-cols-3 gap-8 max-w-2xl mx-auto"
-        >
-          <div className="text-center">
-            <div className="text-3xl font-black text-red-900">6</div>
-            <div className="text-xs font-mono text-gray-400 mt-2">CORE_MEMBERS</div>
+              {/* Social Media Icons */}
+              <div className="flex gap-6 pt-4">
+                <SocialLink icon={<Twitter size={20} />} href={member.socials.twitter} />
+                <SocialLink icon={<Instagram size={20} />} href={member.socials.insta} />
+                <SocialLink icon={<Youtube size={20} />} href={member.socials.yt} />
+                <div className="h-10 w-[1px] bg-white/20 mx-2" />
+                <button className="flex items-center gap-2 text-[10px] font-bold hover:text-red-600 transition-colors">
+                  DATA_SHEET <ExternalLink size={12} />
+                </button>
+              </div>
+            </motion.div>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-black text-white">∞</div>
-            <div className="text-xs font-mono text-gray-400 mt-2">DEPTH_LAYERS</div>
+
+          {/* Side Indicator */}
+          <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-4 items-center">
+            <span className="text-[10px] [writing-mode:vertical-lr] text-gray-600 tracking-widest font-mono">SCROLL_FOR_MORE</span>
+            <div className="w-[1px] h-32 bg-gradient-to-b from-red-600 to-transparent" />
           </div>
-          <div className="text-center col-span-2 md:col-span-1">
-            <div className="text-3xl font-black text-red-900">3D</div>
-            <div className="text-xs font-mono text-gray-400 mt-2">FORMATION</div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
+        </section>
+      ))}
+    </main>
+  );
+}
+
+function SocialLink({ icon, href }: { icon: React.ReactNode, href: string }) {
+  return (
+    <a 
+      href={href} 
+      className="p-2 border border-white/10 hover:border-red-600 hover:text-red-600 transition-all duration-300 transform hover:-translate-y-1"
+    >
+      {icon}
+    </a>
   );
 }

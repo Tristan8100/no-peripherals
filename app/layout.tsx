@@ -22,7 +22,7 @@ export const metadata: Metadata = {
         media: '(prefers-color-scheme: dark)',
       },
       {
-        url: '/NP_TRANSPARENT.png',
+        url: '/NP_WHITE.png',
         type: 'image/png',
       }
     ],
