@@ -1,40 +1,116 @@
-'use client';
+'use client'
+import  Link from 'next/link'
+//import { Logo } from '@/components/logo'
+import { Menu, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import React from 'react'
+import { cn } from '@/lib/utils'
+import Image from 'next/image'
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
+const menuItems = [
+    { name: 'Features', href: '#features' },
+    { name: 'About', href: '#about' },
+    { name: 'How to join', href: '#how-to-join' },
+    { name: 'FAQs', href: '#faqs' },
+]
 
-const navItems = ['HOME', 'ROSTER', 'TOUR', 'GALLERY', 'ARCHIVE'];
+export const Navbar = () => {
+    const [menuState, setMenuState] = React.useState(false)
+    const [isScrolled, setIsScrolled] = React.useState(false)
 
-export function Navbar() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    React.useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50)
+        }
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+    return (
+        <header>
+            <nav
+                data-state={menuState && 'active'}
+                className="fixed z-20 w-full px-2">
+                <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5')}>
+                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
+                        <div className="flex w-full justify-between lg:w-auto">
+                            <Link
+                                href="/"
+                                aria-label="home"
+                                className="flex items-center space-x-2">
+                                <Image className='w-10' src="/NP_TRANSPARENT.png" alt="" width={40} height={40} />
+                                <div>NO-PERIPHERALS</div>
+                            </Link>
 
-  return (
-    <motion.nav
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="fixed top-8 left-1/2 -translate-x-1/2 z-50"
-    >
-      <div className="glass px-1 py-1 rounded-full flex gap-1">
-        {navItems.map((item, index) => (
-          <motion.button
-            key={item}
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-            className="relative px-4 py-2 text-sm font-mono text-white"
-            whileHover={{ scale: 1.05 }}
-          >
-            {hoveredIndex === index && (
-              <motion.div
-                layoutId="navbar-pill"
-                className="absolute inset-0 bg-red-900/30 rounded-full border border-red-900/50"
-                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              />
-            )}
-            <span className="relative z-10">{item}</span>
-          </motion.button>
-        ))}
-      </div>
-    </motion.nav>
-  );
+                            <button
+                                onClick={() => setMenuState(!menuState)}
+                                aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
+                                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
+                                <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
+                                <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
+                            </button>
+                        </div>
+
+                        <div className="absolute inset-0 m-auto hidden size-fit lg:block">
+                            <ul className="flex gap-8 text-sm">
+                                {menuItems.map((item, index) => (
+                                    <li key={index}>
+                                        <a
+                                            href={item.href}
+                                            className="text-muted-foreground hover:text-primary block duration-150">
+                                            <span>{item.name}</span>
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+                            <div className="lg:hidden">
+                                <ul className="space-y-6 text-base">
+                                    {menuItems.map((item, index) => (
+                                        <li key={index}>
+                                            <a
+                                                href={item.href}
+                                                className="text-muted-foreground hover:text-primary block duration-150">
+                                                <span>{item.name}</span>
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    size="sm"
+                                    className={cn(isScrolled && 'lg:hidden')}>
+                                    <Link href="/login">
+                                        <span>Login</span>
+                                    </Link>
+                                </Button>
+                                <Button
+                                    asChild
+                                    size="sm"
+                                    variant="destructive"
+                                    className={cn(isScrolled && 'lg:hidden')}>
+                                    <Link href="/register">
+                                        <span>Sign Up</span>
+                                    </Link>
+                                </Button>
+                                <Button
+                                    asChild
+                                    size="sm"
+                                    variant="destructive"
+                                    className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}>
+                                    <Link href="#home">
+                                        <span>Get Started</span>
+                                    </Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    )
 }
