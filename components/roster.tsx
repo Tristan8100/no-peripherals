@@ -8,10 +8,10 @@ import { HeaderTitle } from './header-title';
 const members = [
   { 
     id: 1, 
-    name: 'ALEX', 
-    role: 'LEAD_SYNTH', 
-    details: 'The sonic architect behind the Depth Composition. Specializes in neuro-rhythmic synthesis and analog distortion.',
-    image: '/Luigi_Poster.png', // Placeholder
+    name: 'LUIGIIIIIII', 
+    role: 'bASSSSS', 
+    details: 'the bASSSSS.',
+    image: '/15 (1).png', // Placeholder
     color: '#FF3B3B',
     socials: { twitter: '#', insta: '#', yt: '#' }
   },

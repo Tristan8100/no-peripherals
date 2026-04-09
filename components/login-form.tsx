@@ -3,13 +3,18 @@
 import { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from 'lucide-react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
+
+const supabase = createClient();
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const containerVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
@@ -23,22 +28,33 @@ export function LoginForm() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-      if (!user.emailVerified) {
-        alert("Your email is not verified. Please check your inbox.");
-        return;
-      }
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
 
-      alert(`Welcome back, ${user.email}!`);
-      // redirect or update app state here
+    // get role from public.users
+    const { data: userData } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', data.user.id)
+      .single();
 
-    } catch (error: any) {
-      console.error("Login Error:", error.message);
-      alert(error.message);
+    setLoading(false);
+
+    if (userData?.role === 'admin') {
+      router.push('/admin/dashboard');
+    } else if (userData?.role === 'user') {
+      router.push('/user/dashboard');
+    } else {
+      setError('Invalid email or password');
+      setLoading(false);
     }
   };
 
@@ -89,23 +105,28 @@ export function LoginForm() {
 
       {/* Forgot password */}
       <motion.div custom={2} variants={inputVariants} className="text-right">
-        <button
-          type="button"
-          className="text-sm text-gray-400 hover:text-red-900 transition-colors font-mono"
-        >
+        <button type="button" className="text-sm text-gray-400 hover:text-red-900 transition-colors font-mono">
           FORGOT PASSWORD?
         </button>
       </motion.div>
 
-      {/* Submit button */}
-      <motion.div custom={3} variants={inputVariants} className="pt-4">
+      {/* Error */}
+      {error && (
+        <motion.p custom={3} variants={inputVariants} className="text-red-500 text-xs font-mono">
+          {error}
+        </motion.p>
+      )}
+
+      {/* Submit */}
+      <motion.div custom={4} variants={inputVariants} className="pt-4">
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
-          className="w-full bg-gradient-to-r from-red-900 to-red-800 hover:from-red-800 hover:to-red-700 text-white py-2 px-4 rounded font-mono font-semibold transition-all duration-300 flex items-center justify-center gap-2 group shadow-lg shadow-red-900/20 hover:shadow-red-900/40"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-red-900 to-red-800 hover:from-red-800 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-2 px-4 rounded font-mono font-semibold transition-all duration-300 flex items-center justify-center gap-2 group shadow-lg shadow-red-900/20 hover:shadow-red-900/40"
         >
-          ENTER
+          {loading ? "ENTERING..." : "ENTER"}
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </motion.button>
       </motion.div>
