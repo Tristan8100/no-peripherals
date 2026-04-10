@@ -1,0 +1,1 @@
+export const BUCKET = 'no-peripherals-storage'

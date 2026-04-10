@@ -25,26 +25,51 @@ export async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone()
   const pathname = url.pathname
 
-  // 1. Define your route types
   const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register')
-  const isProtectedRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/profile')
+  const isAdminRoute = pathname.startsWith('/admin')
+  const isUserRoute = pathname.startsWith('/user')
 
-  // 2. Redirect logic
-  
-  // If NOT logged in and trying to hit a PROTECTED page, go to login
-  if (!user && isProtectedRoute) {
+
+  if (!user && (isAdminRoute || isUserRoute)) {
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // If logged in and trying to hit login/register, go to dashboard
-//   if (user && isAuthRoute) {
-//     url.pathname = '/dashboard'
-//     return NextResponse.redirect(url)
-//   }
+  let role: string | null = null
 
-  // If you are at /login and click /, this will now let you through 
-  // because / is neither a Protected Route nor an Auth Route.
+  if (user) {
+    const { data: userData } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    role = userData?.role ?? null
+  }
+
+  if (user) {
+    // Admin routes
+    if (isAdminRoute && role !== 'admin') {
+      url.pathname = '/user/dashboard' // fallback
+      return NextResponse.redirect(url)
+    }
+
+    // User routes
+    if (isUserRoute && role !== 'user') {
+      url.pathname = '/admin/dashboard' // fallback
+      return NextResponse.redirect(url)
+    }
+  }
+
+  // if (user && isAuthRoute) {
+  //   if (role === 'admin') {
+  //     url.pathname = '/admin/dashboard'
+  //   } else {
+  //     url.pathname = '/user/dashboard'
+  //   }
+  //   return NextResponse.redirect(url)
+  // }
+
   return supabaseResponse
 }
 
