@@ -84,7 +84,7 @@ export const Navbar = () => {
                                     variant="outline"
                                     size="sm"
                                     className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link href="/login">
+                                    <Link href="/auth/login">
                                         <span>Login</span>
                                     </Link>
                                 </Button>
@@ -93,7 +93,7 @@ export const Navbar = () => {
                                     size="sm"
                                     variant="destructive"
                                     className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link href="/register">
+                                    <Link href="/auth/register">
                                         <span>Sign Up</span>
                                     </Link>
                                 </Button>

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Navbar } from '@/components/navbar';
 import { Hero } from '@/components/hero';
 import { Roster } from '@/components/roster';
-import { Tour } from '@/components/tour';
+import { Tour } from '@/components/modules/tour';
 import { Gallery } from '@/components/gallery';
 import { Footer } from '@/components/footer';
 

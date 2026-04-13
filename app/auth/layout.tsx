@@ -14,7 +14,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       {/* Image side */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <Image
-          src="/np1.jpg"
+          src="/IMG_2063.jpg"
           alt="Background"
           fill
           className="object-cover opacity-40 blur-[2px]"
@@ -31,7 +31,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             </div>
 
             <h2 className="text-3xl font-bold text-white">
-              ACCESS <span className="text-red-900">GRANTED</span>
+              NO <span className="text-red-900">PERIPHERALS</span>
             </h2>
           </div>
 
