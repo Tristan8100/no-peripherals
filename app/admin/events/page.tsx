@@ -12,29 +12,21 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { BUCKET } from '@/utils/bucket'
 import Link from 'next/link'
+import useEvent from '@/hooks/event.hooks'
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  // const [events, setEvents] = useState<any[]>([])
+  // const [loading, setLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<any>(null)
   const [submitting, setSubmitting] = useState(false)
 
+  const { events, setEvents, loading, setLoading, error, setError, fetchEvents } = useEvent()
+
+
   useEffect(() => {
     fetchEvents()
   }, [])
-
-  async function fetchEvents() {
-    setLoading(true)
-    const { data, error } = await supabase
-      .from('events')
-      .select('*, event_pictures(*)')
-      .order('created_at', { ascending: false })
-    
-    if (error) console.error('Fetch error:', error)
-    else setEvents(data || [])
-    setLoading(false)
-  }
 
   async function uploadFile(file: File) {
     const filePath = `events/${Date.now()}-${file.name}`
@@ -169,8 +161,7 @@ export default function EventsPage() {
               <div>
                 {selectedEvent ? (
                   <Link href={`/admin/events/${selectedEvent?.id}`}>
-                    <Button type="button" variant="destructive">
-                    {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                    <Button type="button" variant="secondary">
                     View Event
                   </Button>
                   </Link>
