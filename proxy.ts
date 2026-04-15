@@ -31,7 +31,7 @@ export async function proxy(request: NextRequest) {
 
 
   if (!user && (isAdminRoute || isUserRoute)) {
-    url.pathname = '/login'
+    url.pathname = '/auth/login'
     return NextResponse.redirect(url)
   }
 
