@@ -28,6 +28,7 @@ export async function proxy(request: NextRequest) {
   const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register')
   const isAdminRoute = pathname.startsWith('/admin')
   const isUserRoute = pathname.startsWith('/user')
+  const isMemberRoute = pathname.startsWith('/member')
 
 
   if (!user && (isAdminRoute || isUserRoute)) {
@@ -47,16 +48,20 @@ export async function proxy(request: NextRequest) {
     role = userData?.role ?? null
   }
 
-  if (user) {
-    // Admin routes
+
+  if (user && role) {
     if (isAdminRoute && role !== 'admin') {
-      url.pathname = '/user/dashboard' // fallback
+      url.pathname = '/unauthorized'
       return NextResponse.redirect(url)
     }
 
-    // User routes
     if (isUserRoute && role !== 'user') {
-      url.pathname = '/admin/dashboard' // fallback
+      url.pathname = '/unauthorized'
+      return NextResponse.redirect(url)
+    }
+
+    if (isMemberRoute && role !== 'band_member') {
+      url.pathname = '/unauthorized'
       return NextResponse.redirect(url)
     }
   }

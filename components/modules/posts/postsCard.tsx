@@ -4,6 +4,7 @@ import { PostCardProps } from "@/types/posts.types"
 import { Edit, Trash2, Heart, MessageCircle } from "lucide-react" // Imported MessageCircle
 import { ImageCarousel } from "./posts.functions"
 import Comments from "./comments"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 
 export function PostCard({ post, currentUserId, role, onEdit, onDelete, onLike, onUnlike, user }: PostCardProps) {
   // Add state to track comment visibility
@@ -21,9 +22,19 @@ export function PostCard({ post, currentUserId, role, onEdit, onDelete, onLike, 
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold uppercase text-muted-foreground select-none">
-            {user?.full_name?.slice(0, 2)}
-          </div>
+          <Avatar>
+            {user?.profile_path &&
+              <AvatarImage
+                src={user.profile_path}
+                className="w-7 h-7 rounded-full object-cover shrink-0"
+              /> 
+            }
+            {!user?.profile_path &&
+              <Avatar className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs font-semibold uppercase text-muted-foreground shrink-0 select-none">
+                {user?.full_name?.slice(0, 2) ?? '??'}
+              </Avatar>
+            }
+          </Avatar>
           <div>
             <p className="text-sm font-medium leading-none">{user?.full_name}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
