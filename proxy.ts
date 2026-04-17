@@ -2,34 +2,33 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  const response = NextResponse.next()
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return request.cookies.getAll() },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+        getAll: () => request.cookies.getAll(),
+
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options)
+          })
         },
       },
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   const url = request.nextUrl.clone()
   const pathname = url.pathname
 
-  const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register')
   const isAdminRoute = pathname.startsWith('/admin')
-  const isUserRoute = pathname.startsWith('/user')
-  const isMemberRoute = pathname.startsWith('/member')
-
+  const isUserRoute = pathname.startsWith('/user') || pathname.startsWith('/member')
 
   if (!user && (isAdminRoute || isUserRoute)) {
     url.pathname = '/auth/login'
@@ -39,15 +38,14 @@ export async function proxy(request: NextRequest) {
   let role: string | null = null
 
   if (user) {
-    const { data: userData } = await supabase
+    const { data } = await supabase
       .from('users')
       .select('role')
       .eq('id', user.id)
       .single()
 
-    role = userData?.role ?? null
+    role = data?.role ?? null
   }
-
 
   if (user && role) {
     if (isAdminRoute && role !== 'admin') {
@@ -55,27 +53,13 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(url)
     }
 
-    if (isUserRoute && role !== 'user') {
-      url.pathname = '/unauthorized'
-      return NextResponse.redirect(url)
-    }
-
-    if (isMemberRoute && role !== 'band_member') {
+    if (isUserRoute && !['user', 'band_member'].includes(role)) {
       url.pathname = '/unauthorized'
       return NextResponse.redirect(url)
     }
   }
 
-  // if (user && isAuthRoute) {
-  //   if (role === 'admin') {
-  //     url.pathname = '/admin/dashboard'
-  //   } else {
-  //     url.pathname = '/user/dashboard'
-  //   }
-  //   return NextResponse.redirect(url)
-  // }
-
-  return supabaseResponse
+  return response
 }
 
 export const config = {

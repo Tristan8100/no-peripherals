@@ -17,3 +17,8 @@ export interface CommentModel {
   author?: CommentAuthor | null
   replies?: CommentModel[]
 }
+
+export interface CommentsProps {
+  postId: string
+  role: 'admin' | 'band_member' | 'user' //changed to band_member
+}

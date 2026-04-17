@@ -27,13 +27,13 @@ export interface PostModel {
 }
 
 export interface PostsProps {
-  role: 'admin' | 'member' | 'user'
+  role: 'admin' | 'band_member' | 'user' // changed to band member
 }
 
 export interface PostCardProps {
   post: PostModel
   currentUserId: string
-  role: 'admin' | 'member' | 'user'
+  role: 'admin' | 'band_member' | 'user' // changed to band member
   user: UserModel | null
   onEdit: (post: PostModel) => void
   onDelete: (post: PostModel) => void

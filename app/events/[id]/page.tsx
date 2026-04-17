@@ -39,11 +39,9 @@ export default function EventDetailPage() {
   if (error) {
     return (
       <div className="max-w-4xl mx-auto p-6 space-y-4">
-        <Link href={'/'}>
-          <Button variant="ghost">
+          <Button variant="ghost" onClick={() => router.back()}>
             <ChevronLeft className="mr-2 h-4 w-4" /> Back to Events
           </Button>
-        </Link>
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
@@ -57,11 +55,9 @@ export default function EventDetailPage() {
   if (!event) {
     return (
       <div className="max-w-4xl mx-auto p-6 space-y-4">
-        <Link href={'/'}>
-          <Button variant="ghost">
+          <Button variant="ghost" onClick={() => router.back()}>
             <ChevronLeft className="mr-2 h-4 w-4" /> Back to Events
           </Button>
-        </Link>
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
@@ -74,7 +70,7 @@ export default function EventDetailPage() {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <Link href="/">
-        <Button variant="ghost">
+        <Button variant="ghost" onClick={() => router.back()}>
           <ChevronLeft className="mr-2 h-4 w-4" /> Back
         </Button>
       </Link>

@@ -5,13 +5,10 @@ import { Heart, Trash2, Edit, CornerDownRight, Loader2, X, Check } from 'lucide-
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import useComment from '@/hooks/comments.hooks'
-import { CommentModel } from '@/types/comments.types'
+import { CommentModel, CommentsProps } from '@/types/comments.types'
 import { supabase } from '@/utils/supabase/client'
 
-interface CommentsProps {
-  postId: string
-  role: 'admin' | 'member' | 'user'
-}
+
 
 function Avatar({ src, name }: { src: string | null; name: string | null }) {
   return src ? (
@@ -105,7 +102,7 @@ function CommentItem({
 }: {
   comment: CommentModel
   currentUserId: string
-  role: 'admin' | 'member' | 'user'
+  role: 'admin' | 'band_member' | 'user'
   postId: string
   depth: number
   onReply: (parentId: string) => void
