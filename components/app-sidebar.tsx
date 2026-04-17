@@ -31,18 +31,39 @@ import { supabase } from "@/utils/supabase/client"
 import Link from "next/link"
 import Image from "next/image"
 
-
-const data = {
-  navMain: [
-    { title: "Dashboard", url: "/admin/dashboard", icon: IconDashboard },
-    { title: "Feed", url: "/admin/posts", icon: IconListDetails },
-    { title: "Users", url: "/admin/users", icon: IconUsers },
-    { title: "Events", url: "/admin/events", icon: IconCalendar },
-  ],
-}
-
-export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ role, ...props }: React.ComponentProps<typeof Sidebar> & { role: "user" | "admin" | "member" }) {
   const [user, setUser] = React.useState<any>(null)
+
+  const data = React.useMemo(() => {
+    if (role === "admin") {
+      return {
+        navMain: [
+          { title: "Dashboard", url: "/admin/dashboard", icon: IconDashboard },
+          { title: "Feed", url: "/admin/posts", icon: IconListDetails },
+          { title: "Users", url: "/admin/users", icon: IconUsers },
+          { title: "Events", url: "/admin/events", icon: IconCalendar },
+        ],
+      }
+    }
+
+    if (role === "member") {
+      return {
+        navMain: [
+          { title: "Dashboard", url: "/member/dashboard", icon: IconDashboard },
+          { title: "Feed", url: "/member/posts", icon: IconListDetails },
+          { title: "Events", url: "/member/events", icon: IconCalendar },
+        ],
+      }
+    }
+
+    // default = user
+    return {
+      navMain: [
+        { title: "Home", url: "/user/dashboard", icon: IconDashboard },
+        { title: "Feed", url: "/user/posts", icon: IconListDetails },
+      ],
+    }
+  }, [role])
 
   React.useEffect(() => {
     const loadUser = async () => {

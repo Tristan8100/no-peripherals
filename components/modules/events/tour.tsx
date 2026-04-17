@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { RecordingDot } from '../svg-decorations';
-import { HeaderTitle } from '../header-title';
+import { RecordingDot } from '../../svg-decorations';
+import { HeaderTitle } from '../../header-title';
 import useEvent from '@/hooks/event.hooks';
 import Link from 'next/link';
 

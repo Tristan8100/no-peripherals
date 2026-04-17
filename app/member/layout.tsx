@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sidebar"
 
 
-export default function adminLayout({ children }: { children: React.ReactNode }) {
+export default function memberLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider
       style={
@@ -17,7 +17,7 @@ export default function adminLayout({ children }: { children: React.ReactNode })
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" role="admin" />
+      <AppSidebar variant="inset" role="member" />
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">
