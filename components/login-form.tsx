@@ -40,7 +40,7 @@ export function LoginForm() {
     }
 
     // get role from public.users
-    const { data: userData } = await supabase
+    const { data: userData, error: userDataError } = await supabase
       .from('users')
       .select('role')
       .eq('id', data.user.id)
@@ -48,12 +48,17 @@ export function LoginForm() {
 
     setLoading(false);
 
+    if (userDataError) {
+      setError(userDataError.message);
+      return;
+    }
+
     if (userData?.role === 'admin') {
       router.push('/admin/dashboard');
     } else if (userData?.role === 'user') {
       router.push('/user/dashboard');
     } else {
-      setError('Invalid email or password');
+      setError('Unknown user role');
       setLoading(false);
     }
   };

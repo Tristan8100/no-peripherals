@@ -47,13 +47,13 @@ export async function proxy(request: NextRequest) {
     role = data?.role ?? null
   }
 
-  if (user && role) {
+  if (user) {
     if (isAdminRoute && role !== 'admin') {
       url.pathname = '/unauthorized'
       return NextResponse.redirect(url)
     }
 
-    if (isUserRoute && !['user', 'band_member'].includes(role)) {
+    if (isUserRoute && (role === null || !['user', 'band_member'].includes(role))) {
       url.pathname = '/unauthorized'
       return NextResponse.redirect(url)
     }
