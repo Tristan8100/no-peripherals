@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
   const tokenHash = searchParams.get('token_hash')
   const type = searchParams.get('type')
-  const next = searchParams.get('next') ?? '/user/dashboard'
+  const next = searchParams.get('next') ?? '/member/dashboard'
 
   const supabase = await createClient()
 
@@ -22,5 +22,5 @@ export async function GET(request: Request) {
     if (!error) return NextResponse.redirect(`${origin}${next}`)
   }
 
-  return NextResponse.redirect(`${origin}/login?error=Could not verify email`)
+  return NextResponse.redirect(`${origin}/auth/login?error=Could not verify email`)
 }

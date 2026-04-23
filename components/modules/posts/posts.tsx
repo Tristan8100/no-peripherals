@@ -1,34 +1,22 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabase/client'
-import { Heart, Trash2, Edit, Loader2, ImageIcon, Plus, X, ChevronLeft, ChevronRight } from 'lucide-react'
-
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Loader2, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
 
 import usePost from '@/hooks/posts.hooks'
-import { PostModel } from '@/types/posts.types'
+import { PostModel, PostsProps } from '@/types/posts.types'
 import { UserModel } from '@/types/users.types'
-import {ImageCarousel, PostFormDialog} from './posts.functions'
-
-import { PostsProps, PostCardProps } from '@/types/posts.types'
-
+import { PostFormDialog } from './posts.functions'
 import { PostCard } from './postsCard'
 
 export default function Posts({ role }: PostsProps) {
   const {
-    posts,
-    loading,
-    fetchPosts,
-    createPost,
-    updatePost,
-    deletePost,
-    likePost,
-    unlikePost,
+    posts, loading, fetchPosts,
+    createPost, updatePost, deletePost,
+    likePost, unlikePost,
   } = usePost()
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
@@ -40,20 +28,14 @@ export default function Posts({ role }: PostsProps) {
   useEffect(() => {
     fetchPosts()
     supabase.auth.getUser().then(async ({ data }) => {
-        const userId = data.user?.id
-        if (!userId) return
-
-        setCurrentUserId(userId)
-
-        const { data: profile } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-        setCurrentUser(profile)
+      const userId = data.user?.id
+      if (!userId) return
+      setCurrentUserId(userId)
+      const { data: profile } = await supabase
+        .from('users').select('*').eq('id', userId).single()
+      setCurrentUser(profile)
     })
-    }, [])
+  }, [])
 
   async function handleSubmit(content: string, newFiles: File[], deletedIds: string[]) {
     setSubmitting(true)
@@ -86,61 +68,74 @@ export default function Posts({ role }: PostsProps) {
     setIsDialogOpen(true)
   }
 
-  // admin sees all, member sees all too (feed) — filter can be adjusted
-  const visiblePosts = posts
-
   return (
-    <div className="p-6 max-w-2xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Posts</h1>
-        <Button
-          onClick={() => {
-            setSelectedPost(null)
-            setIsDialogOpen(true)
-          }}
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          New Post
-        </Button>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-2xl mx-auto px-4 py-8">
+
+        {/* Header */}
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Feed</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+            </p>
+          </div>
+          <Button
+            size="sm"
+            onClick={() => { setSelectedPost(null); setIsDialogOpen(true) }}
+          >
+            <Plus className="w-4 h-4 mr-1.5" />
+            New Post
+          </Button>
+        </div>
+
+        <Separator className="my-4" />
+
+        {/* Dialog */}
+        <PostFormDialog
+          open={isDialogOpen}
+          onOpenChange={(v) => { setIsDialogOpen(v); if (!v) setSelectedPost(null) }}
+          selectedPost={selectedPost}
+          onSubmit={handleSubmit}
+          submitting={submitting}
+        />
+
+        {/* Feed */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span className="text-sm">Loading posts...</span>
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-24 border border-dashed rounded-xl text-muted-foreground">
+            <p className="text-sm font-medium">No posts yet</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setSelectedPost(null); setIsDialogOpen(true) }}
+            >
+              <Plus className="w-4 h-4 mr-1.5" />
+              Create the first one
+            </Button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {posts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                currentUserId={currentUserId ?? ''}
+                role={role}
+                user={currentUser}
+                onEdit={openEdit}
+                onDelete={handleDelete}
+                onLike={likePost}
+                onUnlike={unlikePost}
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Form Dialog */}
-      <PostFormDialog
-        open={isDialogOpen}
-        onOpenChange={(v) => {
-          setIsDialogOpen(v)
-          if (!v) setSelectedPost(null)
-        }}
-        selectedPost={selectedPost}
-        onSubmit={handleSubmit}
-        submitting={submitting}
-      />
-
-      {/* Feed */}
-      {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-        </div>
-      ) : visiblePosts.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground text-sm">No posts yet.</div>
-      ) : (
-        <div className="space-y-4">
-          {visiblePosts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              currentUserId={currentUserId ?? ''}
-              role={role}
-              user={currentUser}
-              onEdit={openEdit}
-              onDelete={handleDelete}
-              onLike={likePost}
-              onUnlike={unlikePost}
-            />
-          ))}
-        </div>
-      )}
     </div>
   )
 }

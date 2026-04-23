@@ -8,16 +8,15 @@ import { cn } from '@/lib/utils'
 import Image from 'next/image'
 
 const menuItems = [
-    { name: 'Features', href: '#features' },
+    { name: 'Members', href: '#members' },
     { name: 'About', href: '#about' },
-    { name: 'How to join', href: '#how-to-join' },
-    { name: 'FAQs', href: '#faqs' },
+    { name: 'Shows', href: '#shows' },
+    { name: 'Gallery', href: '#gallery' },
 ]
 
 export const Navbar = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
-
     React.useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50)
@@ -79,24 +78,25 @@ export const Navbar = () => {
                                 </ul>
                             </div>
                             <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                                <Link href="/auth/login">
                                 <Button
                                     asChild
                                     variant="outline"
                                     size="sm"
                                     className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link href="/auth/login">
                                         <span>Login</span>
-                                    </Link>
                                 </Button>
+                                </Link>
+
+                                <Link href="/auth/register">
                                 <Button
                                     asChild
                                     size="sm"
                                     variant="destructive"
                                     className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link href="/auth/register">
-                                        <span>Sign Up</span>
-                                    </Link>
+                                    <span>Sign Up</span>
                                 </Button>
+                                </Link>
                                 <Button
                                     asChild
                                     size="sm"

@@ -55,8 +55,8 @@ export function LoginForm() {
 
     if (userData?.role === 'admin') {
       router.push('/admin/dashboard');
-    } else if (userData?.role === 'user') {
-      router.push('/user/dashboard');
+    } else if (userData?.role === 'user' || userData?.role === 'band_member') {
+      router.push('/member/dashboard');
     } else {
       setError('Unknown user role');
       setLoading(false);

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import {
   LayoutGrid,
@@ -32,6 +32,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/utils/supabase/client";
 
 const NAV_ITEMS = [
   { label: "Feed",    href: "/member/feed",    icon: LayoutGrid   },
@@ -100,18 +101,22 @@ function NavLink({
   );
 }
 
-// ─── Layout ───────────────────────────────────────────────────────────────────
 
 export default function UserLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) console.error(error)
+    console.log("Signed out")
+    redirect('/auth/login')
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* ── Top Navigation Bar ─────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b bg-card shadow-sm">
         <div className="mx-auto flex h-14 max-w-screen-xl items-center gap-2 px-4">
 
-          {/* ── Logo ─────────────────────────────────────────────────── */}
           <Link
             href="/user/feed"
             className="mr-2 flex shrink-0 items-center gap-2 font-bold text-primary"
@@ -120,12 +125,11 @@ export default function UserLayout({ children }: { children: ReactNode }) {
             <img src="/NP_TRANSPARENT.png" alt="Your avatar" className="h-8 w-8 rounded-full" />
           </Link>
 
-          {/* ── Search (desktop) ─────────────────────────────────────── */}
           <div className="hidden md:block">
             <NavSearch />
           </div>
 
-          {/* ── Desktop Center Nav ───────────────────────────────────── */}
+
           <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
             {NAV_ITEMS.map(({ href, label, icon }) => (
               <NavLink
@@ -138,7 +142,6 @@ export default function UserLayout({ children }: { children: ReactNode }) {
             ))}
           </nav>
 
-          {/* ── Right Actions ────────────────────────────────────────── */}
           <div className="ml-auto flex items-center gap-1">
             {/* Search icon — mobile only */}
             <Button
@@ -150,7 +153,6 @@ export default function UserLayout({ children }: { children: ReactNode }) {
               <Search className="h-4 w-4" />
             </Button>
 
-            {/* Avatar / Profile Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -173,13 +175,10 @@ export default function UserLayout({ children }: { children: ReactNode }) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/user/profile">View Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
                   <Link href="/user/profile/settings">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive focus:text-destructive">
+                <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={handleLogout}>
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -245,10 +244,9 @@ export default function UserLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      {/* ── Page Content ───────────────────────────────────────────────────── */}
       <main className="flex-1">{children}</main>
 
-      {/* ── Mobile Bottom Tab Bar ──────────────────────────────────────────── */}
+      {/*Mobile */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card md:hidden">
         <div className="flex h-16 items-center justify-around px-2">
           {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
@@ -277,7 +275,6 @@ export default function UserLayout({ children }: { children: ReactNode }) {
         </div>
       </nav>
 
-      {/* Bottom padding so content doesn't hide behind bottom tab bar on mobile */}
       <div className="h-16 md:hidden" aria-hidden="true" />
     </div>
   );

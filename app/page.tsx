@@ -19,11 +19,13 @@ export default function Home() {
 
   return (
     <main className="w-full overflow-hidden bg-black">
-      <Navbar />
+      <div className="fixed top-0 w-full z-50"><Navbar /></div>
       <Hero />
-      <Roster />
-      <Tour />
-      <Gallery />
+      <div id='members'><Roster /></div>
+      <div id='shows'><Tour /></div>
+      <div id='gallery'><Gallery /></div>
+      
+      
       <Footer />
     </main>
   );
