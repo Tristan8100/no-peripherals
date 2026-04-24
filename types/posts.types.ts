@@ -22,6 +22,7 @@ export interface PostModel {
   updated_at: string
   post_images?: PostImage[]
   post_likes?: PostLike[]
+  users: UserModel
   // joined from auth.users via profiles or RPC — attach as needed
   author_email?: string
 }

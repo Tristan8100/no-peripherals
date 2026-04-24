@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/sidebar"
 import { supabase } from "@/utils/supabase/client"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 
 export function NavUser({
   user,
@@ -47,6 +48,7 @@ export function NavUser({
     const { error } = await supabase.auth.signOut()
     if (error) console.error(error)
     console.log("Signed out")
+    redirect("/auth/login")
   }
 
   return (

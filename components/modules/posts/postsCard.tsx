@@ -37,13 +37,13 @@ export function PostCard({ post, currentUserId, role, onEdit, onDelete, onLike, 
       <div className="flex items-center justify-between px-4 pt-4 pb-3">
         <div className="flex items-center gap-3">
           <Avatar className="h-9 w-9 ring-2 ring-white/30">
-            {user?.profile_path && <AvatarImage src={user.profile_path} className="object-cover" />}
+            {post?.users?.profile_path && <AvatarImage src={post.users.profile_path} className="object-cover" />}
             <AvatarFallback className="text-xs font-semibold bg-white/20 text-foreground">
-              {user?.full_name?.slice(0, 2).toUpperCase() ?? '??'}
+              {post.users?.full_name?.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-sm font-semibold leading-none">{user?.full_name ?? 'Unknown'}</p>
+            <p className="text-sm font-semibold leading-none">{post.users?.full_name ?? 'Unknown'}</p>
             <p className="text-xs text-muted-foreground mt-1">
               {new Date(post.created_at).toLocaleDateString('en-PH', {
                 month: 'short', day: 'numeric', year: 'numeric'

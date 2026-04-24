@@ -15,7 +15,7 @@ export default function usePost() {
     setLoading(true)
     const { data, error } = await supabase
       .from('posts')
-      .select('*, post_images(*), post_likes(*)')
+      .select('*, post_images(*), post_likes(*), users!posts_user_id_fkey(*)')
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -23,6 +23,7 @@ export default function usePost() {
       setError(error.message)
     } else {
       setPosts(data || [])
+      console.log('fetchPosts data:', data)
     }
     setLoading(false)
   }
