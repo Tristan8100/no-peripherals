@@ -112,7 +112,7 @@ export function Footer() {
 
           {/* Watermark */}
           <div className="absolute bottom-4 right-4 text-gray-800 font-mono text-xs writing-mode-vertical opacity-50">
-            NAVI CHEEZE
+            MARK TRISTAN - DEVELOPER
           </div>
         </motion.div>
       </div>

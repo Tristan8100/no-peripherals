@@ -107,7 +107,7 @@ export function Roster() {
                   <img
                     src={member.profile_path}
                     alt={member.full_name ?? ''}
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-all duration-700 scale-105 group-hover:scale-110"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-zinc-900">
