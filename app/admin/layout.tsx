@@ -17,7 +17,7 @@ export default function adminLayout({ children }: { children: React.ReactNode })
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" role="admin" />
+      <AppSidebar variant="floating" role="admin" />
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">

@@ -1,3 +1,5 @@
+import Posts from "@/components/modules/posts/posts";
+
 export default function DashboardPage() {
-    return <h1>Dashboard</h1>;
+    return <><Posts role="admin" /></>;
 }

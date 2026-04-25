@@ -39,7 +39,6 @@ export function AppSidebar({ role, ...props }: React.ComponentProps<typeof Sideb
       return {
         navMain: [
           { title: "Dashboard", url: "/admin/dashboard", icon: IconDashboard },
-          { title: "Feed", url: "/admin/posts", icon: IconListDetails },
           { title: "Users", url: "/admin/users", icon: IconUsers },
           { title: "Members", url: "/admin/members", icon: IconFileDescription },
           { title: "Events", url: "/admin/events", icon: IconCalendar },
@@ -92,7 +91,7 @@ export function AppSidebar({ role, ...props }: React.ComponentProps<typeof Sideb
   }, [])
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

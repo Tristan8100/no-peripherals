@@ -155,8 +155,6 @@ function DragCard({ member }: { member: UserModel }) {
   )
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
 function getInitials(name: string | null, email: string) {
   if (name) return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
   return (email[0] ?? '?').toUpperCase()
@@ -170,8 +168,6 @@ function formatDate(dateStr: string | null) {
     day: 'numeric',
   })
 }
-
-// ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function BandMembersOrder() {
   const [members, setMembers] = useState<UserModel[]>([])
@@ -199,7 +195,6 @@ export default function BandMembersOrder() {
 
       if (error) throw error
 
-      // Members with null display_order go to end, sorted by name
       const sorted = (data ?? []).slice().sort((a, b) => {
         if (a.display_order == null && b.display_order == null)
           return (a.full_name ?? '').localeCompare(b.full_name ?? '')
@@ -250,7 +245,6 @@ export default function BandMembersOrder() {
       const failed = results.find(r => r.error)
       if (failed?.error) throw failed.error
 
-      // Update local state to reflect saved order
       setMembers(prev => prev.map((m, i) => ({ ...m, display_order: i + 1 })))
       setDirty(false)
       setSaved(true)
@@ -264,7 +258,6 @@ export default function BandMembersOrder() {
 
   const activeMember = activeId ? members.find(m => m.id === activeId) ?? null : null
 
-  // ── Render ────────────────────────────────────────────────────────────────
 
   if (loading) {
     return (
@@ -291,12 +284,12 @@ export default function BandMembersOrder() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <div className="p-6 space-y-6 mt-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between lg:mx-20">
         <div className="flex items-center gap-2">
           <Users className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-2xl font-semibold">Band Member Order</h1>
+          <h1 className="text-md md:text-lg font-semibold">Band Member Order</h1>
           <Badge variant="secondary" className="ml-1">{members.length}</Badge>
         </div>
 
@@ -331,7 +324,7 @@ export default function BandMembersOrder() {
         </Alert>
       )}
 
-      <p className="text-sm text-muted-foreground -mt-2">
+      <p className="text-sm text-muted-foreground lg:mx-20">
         Drag rows to reorder band members. The order here controls how they appear on the public band page.
       </p>
 
@@ -346,7 +339,7 @@ export default function BandMembersOrder() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <div className="border rounded-lg overflow-hidden">
+          <div className="border rounded-lg overflow-hidden overflow-x-auto lg:mx-20">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-muted/50 border-b">

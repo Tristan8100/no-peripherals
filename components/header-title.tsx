@@ -9,7 +9,7 @@ export function HeaderTitle({ title, description, className }: { title: string, 
           transition={{ duration: 0.8 }}
           className={cn("text-center", className)}
         >
-          <h2 className="text-5xl md:text-6xl font-black text-white mb-4 glow-text">
+          <h2 className="text-4xl md:text-6xl font-black text-white mb-4 glow-text">
             {title}
           </h2>
           <p className="text-gray-400 font-mono text-sm">

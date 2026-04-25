@@ -177,7 +177,7 @@ export function Hero() {
                     variants={titleVariants}
                     initial="hidden"
                     animate="visible"
-                    className="text-5xl sm:text-7xl md:text-8xl font-black italic tracking-tighter text-white hover:text-accent transition"
+                    className="text-4xl sm:text-7xl md:text-8xl font-black italic tracking-tighter text-white hover:text-accent glow-text transition"
                   >
                     {char}
                   </motion.span>

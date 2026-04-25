@@ -36,7 +36,7 @@ import { supabase } from "@/utils/supabase/client";
 import React from "react";
 
 const NAV_ITEMS = [
-  { label: "Feed",    href: "/member/feed",    icon: LayoutGrid   },
+  { label: "Dashboard",    href: "/member/dashboard",    icon: LayoutGrid   },
   { label: "Events",  href: "/member/events",  icon: CalendarDays },
   { label: "Members", href: "/member/members", icon: Users        },
   { label: "Profile", href: "/member/profile", icon: UserCircle2  },

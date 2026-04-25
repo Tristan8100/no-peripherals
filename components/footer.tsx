@@ -5,8 +5,8 @@ import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 
 const socialLinks = [
   { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Instagram, label: 'Instagram', href: '#' },
-  { icon: Facebook, label: 'Facebook', href: '#' },
+  { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/noperipheralsofficial' },
+  { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/noperipheralsofficial' },
   { icon: Youtube, label: 'YouTube', href: '#' },
 ];
 
@@ -27,7 +27,7 @@ export function Footer() {
                 NO PERIPHERALS
               </h3>
               <p className="text-gray-500 font-mono text-xs">
-                TECH-NOIR COLLECTIVE
+                STARTING {new Date().getFullYear()}
               </p>
             </div>
             <p className="text-gray-600 text-sm leading-relaxed">
@@ -91,7 +91,7 @@ export function Footer() {
         >
           {/* Copyright */}
           <div className="text-gray-600 font-mono text-xs mb-6 md:mb-0 text-center md:text-left">
-            © 2024 NO PERIPHERALS. ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} NO PERIPHERALS. ALL RIGHTS RESERVED.
           </div>
 
           {/* Back to top button */}
