@@ -31,7 +31,7 @@ export type BandMemberForm = {
   joined_at: string
   bio: string
   departed_at: string
-  display_order: string
+  //display_order: string
   is_active: boolean
   socials: Socials
 }

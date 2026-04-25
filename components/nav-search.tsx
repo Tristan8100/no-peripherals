@@ -12,6 +12,7 @@ export interface NavSearchProps {
   variant?: "default" | "sheet";
   placeholder?: string;
   className?: string;
+  isAdmin: boolean;
 }
 
 interface UserResult {
@@ -38,6 +39,7 @@ export function NavSearch({
   variant = "default",
   placeholder = "Search members…",
   className,
+  isAdmin,
 }: NavSearchProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -86,7 +88,6 @@ export function NavSearch({
     search(debouncedQuery);
   }, [debouncedQuery, search]);
 
-  // ── Close on outside click ──────────────────────────────────────────────────
 
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
@@ -101,7 +102,6 @@ export function NavSearch({
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
-  // ── Keyboard navigation ─────────────────────────────────────────────────────
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!isOpen || results.length === 0) return;
@@ -120,12 +120,11 @@ export function NavSearch({
     }
   }
 
-  // ── Actions ─────────────────────────────────────────────────────────────────
 
   function handleSelect(userId: string) {
     setQuery("");
     setIsOpen(false);
-    router.push(`/user/profile/${userId}`);
+    router.push(`/${isAdmin ? "admin" : "member"}/profile/${userId}`);
   }
 
   function handleClear() {
@@ -135,12 +134,10 @@ export function NavSearch({
     inputRef.current?.focus();
   }
 
-  // ── Derived ─────────────────────────────────────────────────────────────────
 
   const isSheet = variant === "sheet";
   const showDropdown = isOpen && query.trim().length > 0;
 
-  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <div
@@ -192,8 +189,6 @@ export function NavSearch({
           </button>
         )}
       </div>
-
-      {/* ── Dropdown results ──────────────────────────────────────────────── */}
       {showDropdown && (
         <ul
           id="nav-search-results"

@@ -35,7 +35,6 @@ const EMPTY_FORM: BandMemberForm = {
   joined_at: '',
   bio: '',
   departed_at: '',
-  display_order: '',
   is_active: true,
   socials: {},
 }
@@ -85,7 +84,6 @@ export default function UsersComponent() {
       joined_at: user.joined_at ?? '',
       bio: user.bio ?? '',
       departed_at: user.departed_at ?? '',
-      display_order: user.display_order?.toString() ?? '',
       is_active: user.is_active ?? true,
       socials: user.socials ?? {},
     })
@@ -144,7 +142,6 @@ export default function UsersComponent() {
           joined_at: form.joined_at,
           bio: form.bio || null,
           departed_at: form.departed_at || null,
-          display_order: form.display_order ? parseInt(form.display_order) : null,
           is_active: form.is_active,
           socials: Object.keys(form.socials).length ? form.socials : null,
           profile_path: profileUrl,
@@ -162,7 +159,6 @@ export default function UsersComponent() {
               joined_at: form.joined_at,
               bio: form.bio || null,
               departed_at: form.departed_at || null,
-              display_order: form.display_order ? parseInt(form.display_order) : null,
               is_active: form.is_active,
               socials: Object.keys(form.socials).length ? form.socials : null,
               profile_path: profileUrl ?? null,
@@ -474,15 +470,6 @@ export default function UsersComponent() {
                   type="date"
                   value={form.departed_at}
                   onChange={e => setForm(f => ({ ...f, departed_at: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Display Order <span className="text-muted-foreground text-xs">(optional)</span></Label>
-                <Input
-                  type="number"
-                  placeholder="e.g. 1"
-                  value={form.display_order}
-                  onChange={e => setForm(f => ({ ...f, display_order: e.target.value }))}
                 />
               </div>
             </div>

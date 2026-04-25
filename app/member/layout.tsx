@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import {
   LayoutGrid,
   CalendarDays,
@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/utils/supabase/client";
+import React from "react";
 
 const NAV_ITEMS = [
   { label: "Feed",    href: "/member/feed",    icon: LayoutGrid   },
@@ -104,6 +105,11 @@ function NavLink({
 
 export default function UserLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [user, setUser] = React.useState({
+    name: "",
+    email: "",
+    avatar: "",
+  });
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut()
@@ -111,6 +117,31 @@ export default function UserLayout({ children }: { children: ReactNode }) {
     console.log("Signed out")
     redirect('/auth/login')
   }
+
+  const loadUser = async () => {
+    const { data: authData } = await supabase.auth.getUser()
+    const authUser = authData.user
+
+    if (!authUser) return
+
+    const { data: profile } = await supabase
+      .from("users")
+      .select("full_name, profile_path, email")
+      .eq("id", authUser.id)
+      .single()
+
+      console.log('profile')
+
+    setUser({
+      name: profile?.full_name ?? authUser.email,
+      email: profile?.email ?? authUser.email,
+      avatar: profile?.profile_path ?? "/avatars/default.png",
+    })
+  }
+
+  useEffect(() => {
+    loadUser()
+  }, [])
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -121,12 +152,11 @@ export default function UserLayout({ children }: { children: ReactNode }) {
             href="/user/feed"
             className="mr-2 flex shrink-0 items-center gap-2 font-bold text-primary"
           >
-            {/* Compact logo mark */}
             <img src="/NP_TRANSPARENT.png" alt="Your avatar" className="h-8 w-8 rounded-full" />
           </Link>
 
           <div className="hidden md:block">
-            <NavSearch />
+            <NavSearch isAdmin={false} />
           </div>
 
 
@@ -161,17 +191,17 @@ export default function UserLayout({ children }: { children: ReactNode }) {
                   aria-label="Open profile menu"
                 >
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="/avatar.png" alt="Your avatar" />
+                    <AvatarImage src={user.avatar} alt="Your avatar" />
                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
-                      MT
+                      {user.name?.toUpperCase().slice(0, 2)}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuLabel className="font-normal">
-                  <p className="text-sm font-semibold">Mark Tristan</p>
-                  <p className="text-xs text-muted-foreground">@marktristan</p>
+                  <p className="text-sm font-semibold">{user.name}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
@@ -206,7 +236,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
 
                 {/* Mobile Search */}
                 <div className="px-4 py-3 border-b">
-                  <NavSearch variant="sheet" />
+                  <NavSearch variant="sheet" isAdmin={false} />
                 </div>
 
                 {/* Mobile Nav */}
@@ -227,14 +257,14 @@ export default function UserLayout({ children }: { children: ReactNode }) {
                 <div className="absolute bottom-0 left-0 right-0 border-t p-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src="/avatar.png" alt="Your avatar" />
+                      <AvatarImage src={user.avatar} alt="Your avatar" />
                       <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
-                        MT
+                        {user.name?.toUpperCase().slice(0, 2)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 overflow-hidden">
-                      <p className="truncate text-sm font-semibold">Mark Tristan</p>
-                      <p className="truncate text-xs text-muted-foreground">@marktristan</p>
+                      <p className="truncate text-sm font-semibold">{user.name}</p>
+                      <p className="truncate text-xs text-muted-foreground">{user.email}</p>
                     </div>
                   </div>
                 </div>

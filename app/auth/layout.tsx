@@ -14,7 +14,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       {/* Image side */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <Image
-          src="/IMG_2063.jpg"
+          src="/IMG_2063.JPG"
           alt="Background"
           fill
           className="object-cover opacity-40 blur-[2px]"

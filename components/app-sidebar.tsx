@@ -41,6 +41,7 @@ export function AppSidebar({ role, ...props }: React.ComponentProps<typeof Sideb
           { title: "Dashboard", url: "/admin/dashboard", icon: IconDashboard },
           { title: "Feed", url: "/admin/posts", icon: IconListDetails },
           { title: "Users", url: "/admin/users", icon: IconUsers },
+          { title: "Members", url: "/admin/members", icon: IconFileDescription },
           { title: "Events", url: "/admin/events", icon: IconCalendar },
         ],
       }
