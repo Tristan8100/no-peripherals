@@ -5,6 +5,7 @@ import { motion, Variants } from 'framer-motion';
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const supabase = createClient();
 
@@ -110,9 +111,9 @@ export function LoginForm() {
 
       {/* Forgot password */}
       <motion.div custom={2} variants={inputVariants} className="text-right">
-        <button type="button" className="text-sm text-gray-400 hover:text-red-900 transition-colors font-mono">
+        <Link href="/auth/forgot-password" type="button" className="text-sm text-gray-400 hover:text-red-900 transition-colors font-mono">
           FORGOT PASSWORD?
-        </button>
+        </Link>
       </motion.div>
 
       {/* Error */}

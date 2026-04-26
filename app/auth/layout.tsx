@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Authentication - NO PERIPHERALS',
@@ -30,9 +31,9 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
               <h1 className="text-xs font-mono text-gray-400">NO PERIPHERALS</h1>
             </div>
 
-            <h2 className="text-3xl font-bold text-white">
+            <Link href="/" className="text-3xl font-bold text-white">
               NO <span className="text-red-900">PERIPHERALS</span>
-            </h2>
+            </Link>
           </div>
 
           {children}

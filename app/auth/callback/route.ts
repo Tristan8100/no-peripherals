@@ -13,13 +13,19 @@ export async function GET(request: Request) {
   if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     console.log('exchange error:', error)
-  console.log('exchange data:', data)
-    if (!error) return NextResponse.redirect(`${origin}${next}`)
+    console.log('exchange data:', data)
+    if (!error) {
+      const redirectTo = type === 'recovery' ? '/auth/reset-password' : next
+      return NextResponse.redirect(`${origin}${redirectTo}`)
+    }
   }
 
   if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as any })
-    if (!error) return NextResponse.redirect(`${origin}${next}`)
+    if (!error) {
+      const redirectTo = type === 'recovery' ? '/auth/reset-password' : next
+      return NextResponse.redirect(`${origin}${redirectTo}`)
+    }
   }
 
   return NextResponse.redirect(`${origin}/auth/login?error=Could not verify email`)
