@@ -39,7 +39,6 @@ const NAV_ITEMS = [
   { label: "Dashboard",    href: "/member/dashboard",    icon: LayoutGrid   },
   { label: "Events",  href: "/member/events",  icon: CalendarDays },
   { label: "Members", href: "/member/members", icon: Users        },
-  { label: "Profile", href: "/member/profile", icon: UserCircle2  },
 ] as const;
 
 
@@ -173,15 +172,6 @@ export default function UserLayout({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="ml-auto flex items-center gap-1">
-            {/* Search icon — mobile only */}
-            <Button
-              size="icon"
-              variant="ghost"
-              className="rounded-full md:hidden"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
