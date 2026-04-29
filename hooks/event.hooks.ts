@@ -32,7 +32,7 @@ export default function useEvent() {
       const { data, error } = await supabase
         .from('events')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('event_date', { ascending: false })
   
       if (error) {
         console.error('Fetch error:', error)

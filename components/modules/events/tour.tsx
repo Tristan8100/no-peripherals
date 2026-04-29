@@ -64,7 +64,7 @@ export function Tour() {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          className="space-y-1 border border-red-900/30 rounded-sm overflow-hidden"
+          className="space-y-1 border border-red-900/30 rounded-sm overflow-hidden mt-4"
         >
           {/* Header row */}
           <div className="grid grid-cols-12 gap-2 px-6 py-4 bg-red-900/10 border-b border-red-900/20 font-mono text-xs text-red-900/60">
