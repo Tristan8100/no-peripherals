@@ -11,10 +11,12 @@ import { PostModel, PostsProps } from '@/types/posts.types'
 import { UserModel } from '@/types/users.types'
 import { PostFormDialog } from './posts.functions'
 import { PostCard } from './postsCard'
+import InfiniteScroll from '@/components/infinite-scroll'
 
 export default function Posts({ role }: PostsProps) {
   const {
-    posts, loading, fetchPosts,
+    posts, loading, loadingMore, hasMore,
+    fetchPosts, fetchNextPage,
     createPost, updatePost, deletePost,
     likePost, unlikePost,
   } = usePost()
@@ -133,6 +135,9 @@ export default function Posts({ role }: PostsProps) {
                 onUnlike={unlikePost}
               />
             ))}
+            <InfiniteScroll hasMore={hasMore} isLoading={loadingMore} next={fetchNextPage} threshold={1}>
+              {hasMore && <Loader2 className="my-4 h-6 w-6 animate-spin text-muted-foreground mx-auto" />}
+            </InfiniteScroll>
           </div>
         )}
       </div>

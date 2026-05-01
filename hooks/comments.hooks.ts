@@ -4,60 +4,91 @@ import { useState } from 'react'
 
 import { CommentModel } from '@/types/comments.types'
 
+const COMMENTS_PER_PAGE = 5
+
+async function attachAuthors(flat: any[]): Promise<CommentModel[]> {
+  const userIds = [...new Set(flat.map((c) => c.user_id))]
+  const { data: users } = await supabase
+    .from('users')
+    .select('id, full_name, profile_path, instrument')
+    .in('id', userIds)
+
+  const userMap = Object.fromEntries((users || []).map((u) => [u.id, u]))
+  return flat.map((c) => ({ ...c, author: userMap[c.user_id] ?? null }))
+}
+
 export default function useComment() {
   const [comments, setComments] = useState<CommentModel[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const [page, setPage] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
   async function fetchComments(postId: string) {
     setLoading(true)
     setError(null)
+    setPage(0)
+    setHasMore(true)
 
-    const { data: rawComments, error: commentsError } = await supabase
+    const { data, error } = await supabase
       .from('comments')
-      .select('*, comment_likes(*)')
+      .select('*, comment_likes(*), replies:comments(count)')
       .eq('post_id', postId)
+      .is('parent_id', null)
       .order('created_at', { ascending: true })
+      .range(0, COMMENTS_PER_PAGE - 1)
 
-    if (commentsError) {
-      setError(commentsError.message)
+    if (error) {
+      setError(error.message)
       setLoading(false)
       return
     }
 
-    const flat = rawComments || []
-
-    // fetch authors from public.users separately
-    const userIds = [...new Set(flat.map((c) => c.user_id))]
-    const { data: users } = await supabase
-      .from('users')
-      .select('id, full_name, profile_path, instrument')
-      .in('id', userIds)
-
-    const userMap = Object.fromEntries((users || []).map((u) => [u.id, u]))
-
-    // attach author + empty replies array
-    const withAuthors: CommentModel[] = flat.map((c) => ({
-      ...c,
-      author: userMap[c.user_id] ?? null,
-      replies: [],
-    }))
-
-    // nest replies under parents
-    const map: Record<string, CommentModel> = {}
-    withAuthors.forEach((c) => { map[c.id] = c })
-
-    const roots: CommentModel[] = []
-    withAuthors.forEach((c) => {
-      if (c.parent_id && map[c.parent_id]) {
-        map[c.parent_id].replies!.push(map[c.id])
-      } else {
-        roots.push(map[c.id])
-      }
-    })
-
-    setComments(roots)
+    const withAuthors = await attachAuthors(data || [])
+    setComments(withAuthors)
+    setHasMore((data?.length ?? 0) === COMMENTS_PER_PAGE)
     setLoading(false)
+  }
+
+  async function fetchNextPage(postId: string) {
+    setLoadingMore(true)
+
+    const nextPage = page + 1
+    const from = nextPage * COMMENTS_PER_PAGE
+    const to = from + COMMENTS_PER_PAGE - 1
+
+    const { data, error } = await supabase
+      .from('comments')
+      .select('*, comment_likes(*), replies:comments(count)')
+      .eq('post_id', postId)
+      .is('parent_id', null)
+      .order('created_at', { ascending: true })
+      .range(from, to)
+
+    if (error) {
+      setError(error.message)
+      setLoadingMore(false)
+      return
+    }
+
+    const withAuthors = await attachAuthors(data || [])
+    setComments((prev) => [...prev, ...withAuthors])
+    setPage(nextPage)
+    setHasMore((data?.length ?? 0) === COMMENTS_PER_PAGE)
+    setLoadingMore(false)
+  }
+
+  async function fetchReplies(commentId: string): Promise<CommentModel[]> {
+    const { data, error } = await supabase
+      .from('comments')
+      .select('*, comment_likes(*)')
+      .eq('parent_id', commentId)
+      .order('created_at', { ascending: true })
+
+    if (error) throw error
+
+    return attachAuthors(data || [])
   }
 
   async function createComment(postId: string, content: string, parentId?: string) {
@@ -72,7 +103,12 @@ export default function useComment() {
     }])
 
     if (error) throw error
-    await fetchComments(postId)
+
+    if (!parentId) {
+      // top-level comment: reset feed
+      await fetchComments(postId)
+    }
+    // replies are managed locally in CommentItem — caller refreshes via fetchReplies
   }
 
   async function updateComment(postId: string, commentId: string, content: string) {
@@ -120,8 +156,12 @@ export default function useComment() {
   return {
     comments,
     loading,
+    loadingMore,
+    hasMore,
     error,
     fetchComments,
+    fetchNextPage,
+    fetchReplies,
     createComment,
     updateComment,
     deleteComment,
@@ -145,9 +185,6 @@ function toggleLikeInTree(
           ? [...likes, { user_id: userId, comment_id: commentId, created_at: new Date().toISOString() }]
           : likes.filter((l) => l.user_id !== userId),
       }
-    }
-    if (c.replies?.length) {
-      return { ...c, replies: toggleLikeInTree(c.replies, commentId, userId, add) }
     }
     return c
   })

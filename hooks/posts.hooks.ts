@@ -4,30 +4,63 @@ import { useState } from 'react'
 import { PostModel } from '@/types/posts.types'
 import { BUCKET } from '@/utils/bucket'
 
+const POSTS_PER_PAGE = 5
+
 export default function usePost() {
   const [posts, setPosts] = useState<PostModel[]>([])
   const [post, setPost] = useState<PostModel | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [loadingMore, setLoadingMore] = useState<boolean>(false)
+  const [hasMore, setHasMore] = useState<boolean>(true)
+  const [page, setPage] = useState(0)
   const [error, setError] = useState<string | null>(null)
-
 
   async function fetchPosts() {
     setLoading(true)
+    setPage(0)
+    setHasMore(true)
+
     const { data, error } = await supabase
       .from('posts')
       .select('*, post_images(*), post_likes(*), users!posts_user_id_fkey(*)')
       .order('created_at', { ascending: false })
+      .range(0, POSTS_PER_PAGE - 1)
 
     if (error) {
       console.error('fetchPosts error:', error)
       setError(error.message)
     } else {
       setPosts(data || [])
-      console.log('fetchPosts data:', data)
+      setHasMore((data?.length ?? 0) === POSTS_PER_PAGE)
     }
+
     setLoading(false)
   }
 
+  async function fetchNextPage() {
+    setLoadingMore(true)
+
+    const nextPage = page + 1
+    const from = nextPage * POSTS_PER_PAGE
+    const to = from + POSTS_PER_PAGE - 1
+
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*, post_images(*), post_likes(*), users!posts_user_id_fkey(*)')
+      .order('created_at', { ascending: false })
+      .range(from, to)
+
+    if (error) {
+      console.error('fetchNextPage error:', error)
+      setError(error.message)
+    } else {
+      setPosts((prev) => [...prev, ...(data || [])])
+      setPage(nextPage)
+      setHasMore((data?.length ?? 0) === POSTS_PER_PAGE)
+    }
+
+    setLoadingMore(false)
+  }
 
   async function fetchPost(id: string) {
     if (!id) return
@@ -69,7 +102,6 @@ export default function usePost() {
     return data
   }
 
-
   async function updatePost(id: string, content: string, newImageFiles: File[], deletedImageIds: string[]) {
     const { error } = await supabase
       .from('posts')
@@ -79,7 +111,6 @@ export default function usePost() {
     if (error) throw error
 
     if (deletedImageIds.length > 0) {
-      // fetch urls first for storage cleanup
       const { data: imgs } = await supabase
         .from('post_images')
         .select('id, image_url')
@@ -100,7 +131,6 @@ export default function usePost() {
   }
 
   async function deletePost(postId: string) {
-    // fetch images for storage cleanup
     const { data: imgs } = await supabase
       .from('post_images')
       .select('image_url')
@@ -116,7 +146,6 @@ export default function usePost() {
     await fetchPosts()
   }
 
-
   async function likePost(postId: string) {
     const userId = (await supabase.auth.getUser()).data.user?.id
     if (!userId) throw new Error('Not authenticated')
@@ -127,7 +156,6 @@ export default function usePost() {
 
     if (error) throw error
 
-    // optimistic update
     setPosts((prev) =>
       prev.map((p) =>
         p.id === postId
@@ -149,7 +177,6 @@ export default function usePost() {
 
     if (error) throw error
 
-    // optimistic update
     setPosts((prev) =>
       prev.map((p) =>
         p.id === postId
@@ -185,11 +212,14 @@ export default function usePost() {
     post,
     setPost,
     loading,
+    loadingMore,
+    hasMore,
     setLoading,
     error,
     setError,
     fetchPosts,
     fetchPost,
+    fetchNextPage,
     createPost,
     updatePost,
     deletePost,
