@@ -148,7 +148,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto flex h-14 max-w-screen-xl items-center gap-2 px-4">
 
           <Link
-            href="/user/feed"
+            href="/"
             className="mr-2 flex shrink-0 items-center gap-2 font-bold text-primary"
           >
             <img src="/NP_TRANSPARENT.png" alt="Your avatar" className="h-8 w-8 rounded-full" />

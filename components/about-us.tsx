@@ -85,15 +85,16 @@ export function About() {
             <div className="absolute inset-0 bg-red-900/0 group-hover:bg-red-900/5 transition-colors duration-500 pointer-events-none" />
             <div className="font-mono text-xs text-red-900/60 mb-5">// SOUND</div>
             <p className="font-mono text-sm text-gray-300 leading-relaxed">
-              We're a group of musicians brought together by a dream and passion for music, started in <span className="text-blue-900">STATIC VOID</span>, Ghosted and betrayed by the leader,
+              We're a group of musicians brought together by a dream and passion for music, started in <span className="text-blue-900">STATIC VOID</span>, Ghosted and betrayed by the leader (Navi Cheeze),
               and now here we are. <span className="text-red-900">NO-PERIPHERALS</span>
             </p>
+            <p className="font-mono text-sm text-gray-300 leading-relaxed mt-4">- Luigi</p>
             <p className="font-mono text-sm text-gray-600 leading-relaxed mt-4">
               No records yet. Just shows, passion, and a debut on the way.
             </p>
             <div className="mt-8 border-t border-red-900/20 pt-5">
               <div className="font-mono text-xs text-red-900/50">GENRE</div>
-              <div className="font-mono text-sm text-white mt-1">ROCK // NOISE // UNCLASSIFIED</div>
+              <div className="font-mono text-sm text-white mt-1">ROCK // OPM // PUNK</div>
             </div>
           </motion.div>
 
