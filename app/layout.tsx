@@ -8,9 +8,11 @@ const geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'NO PERIPHERALS - Tech-Noir Collective',
-  description: 'NO PERIPHERALS: A tech-noir collective redefining depth through technological innovation and artistic vision. TOUR DATES • LIVE PERFORMANCES • DEPTH REDEFINED',
-  generator: 'v0.app',
-  keywords: ['band', 'tech-noir', 'collective', 'music', 'performance'],
+  description: 'NO PERIPHERALS: A highly capable ',
+  generator: 'Next.js',
+  keywords: ['band', 'tech-noir', 'collective', 'music', 'performance', 'roster', 'no-peripherals', 'opm', 'punk',
+    'rock',
+  ],
   icons: {
     icon: [
       {
