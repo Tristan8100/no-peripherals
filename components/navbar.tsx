@@ -55,7 +55,7 @@ export const Navbar = () => {
                                     <li key={index}>
                                         <a
                                             href={item.href}
-                                            className="text-muted-foreground hover:text-primary block duration-150">
+                                            className="text-muted-foreground hover:text-destructive block duration-150">
                                             <span>{item.name}</span>
                                         </a>
                                     </li>
@@ -68,11 +68,11 @@ export const Navbar = () => {
                                 <ul className="space-y-6 text-base">
                                     {menuItems.map((item, index) => (
                                         <li key={index}>
-                                            <a
+                                            <Link
                                                 href={item.href}
                                                 className="text-muted-foreground hover:text-primary block duration-150">
                                                 <span>{item.name}</span>
-                                            </a>
+                                            </Link>
                                         </li>
                                     ))}
                                 </ul>
