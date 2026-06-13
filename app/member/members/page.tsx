@@ -141,7 +141,7 @@ function TikTokCard({ member }: { member: UserModel }) {
         <div className="flex flex-col items-center gap-1">
           <button
             style={{ touchAction: 'manipulation' }}
-            onClick={() => router.push(`/members/${member.id}`)}
+            onClick={() => router.push(`/profile/${member.id}`)}
             className="w-11 h-11 rounded-full bg-black/50 border border-white/20 flex items-center justify-center text-white active:scale-95 transition-transform"
           >
             <Eye size={20} />
